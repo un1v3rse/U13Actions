@@ -24,7 +24,7 @@
              parent:(U13Action *)parent
                  vc:(UIViewController *)vc
                type:(U13ActionType)type
-                obj:(id)obj
+                obj:(NSObject *)obj
             success:(U13ActionHandler)success
             failure:(U13ActionHandler)failure
              result:(U13ActionDataHandler)result
@@ -42,57 +42,38 @@
     return self;
 }
 
-+ (id)actionWithQueue:(U13ActionQueue *)queue
-               parent:(U13Action *)parent
-                   vc:(UIViewController *)vc
-                 type:(U13ActionType)type
-                  obj:(id)obj
-              success:(U13ActionHandler)success
-              failure:(U13ActionHandler)failure
-               result:(U13ActionDataHandler)result
+- (id)initWithQueue:(U13ActionQueue *)queue
+                 vc:(UIViewController *)vc
+               type:(U13ActionType)type
+                obj:(NSObject *)obj
+            success:(U13ActionHandler)success
+            failure:(U13ActionHandler)failure
+             result:(U13ActionDataHandler)result
 {
-    return [[self alloc] initWithQueue:queue
-                                parent:parent
-                                    vc:vc
-                                  type:type
-                                   obj:obj
-                               success:success
-                               failure:failure
-                                result:nil] ;
-}
-
-+ (id)actionWithQueue:(U13ActionQueue *)queue
-                   vc:(UIViewController *)vc
-                 type:(U13ActionType)type
-                  obj:(id)obj
-              success:(U13ActionHandler)success
-              failure:(U13ActionHandler)failure
-               result:(U13ActionDataHandler)result
-{
-    return [[self alloc] initWithQueue:queue
-                                parent:nil
-                                    vc:vc
-                                  type:type
-                                   obj:obj
-                               success:success
-                               failure:failure
-                                result:result] ;
+    return [self initWithQueue:queue
+                        parent:nil
+                            vc:vc
+                          type:type
+                           obj:obj
+                       success:success
+                       failure:failure
+                        result:result];
 }
 
 
-+ (id)actionWithParent:(U13Action *)action
-               success:(U13ActionHandler)success
-               failure:(U13ActionHandler)failure
+- (id)initWithParent:(U13Action *)action
+             success:(U13ActionHandler)success
+             failure:(U13ActionHandler)failure
 {
     
-    return [[self alloc] initWithQueue:action.queue
-                                parent:action
-                                    vc:action.vc
-                                  type:action.type
-                                   obj:action.obj
-                               success:success
-                               failure:failure
-                                result:action.result];
+    return [self initWithQueue:action.queue
+                        parent:action
+                            vc:action.vc
+                          type:action.type
+                           obj:action.obj
+                       success:success
+                       failure:failure
+                        result:action.result];
 }
 
 
@@ -104,15 +85,15 @@
     return nil;
 }
 
-- (BOOL)needs_online {
+- (BOOL)needsOnline {
     return NO;
 }
 
-- (BOOL)needs_login {
+- (BOOL)needsLogin {
     return NO;
 }
 
-- (BOOL)extends_online {
+- (BOOL)extendsOnline {
     return NO;
 }
 
@@ -120,10 +101,10 @@
     return YES;
 }
 
-- (void)async_success:(NSString *)msg {
+- (void)asyncSuccess:(NSString *)msg {
     if (_success && !self.isCancelled) {
         _success( self, msg );
-        [_queue update_throttle:self];
+        [_queue updateThrottle:self];
     }
 }
 
@@ -131,14 +112,14 @@
     if (_success && !self.isCancelled) {
         // if this is a top-level action with a view controller, assume the block needs to execute on the main thread
         if (_vc && !_parent) {
-            [self performSelectorOnMainThread:@selector(async_success:) withObject:msg waitUntilDone:YES];
+            [self performSelectorOnMainThread:@selector(asyncSuccess:) withObject:msg waitUntilDone:YES];
         } else {
-            [self async_success:msg];
+            [self asyncSuccess:msg];
         }
     }
 }
 
-- (void)async_failure:(NSString *)msg {
+- (void)asyncFailure:(NSString *)msg {
     if (_failure && !self.isCancelled)
         _failure( self, msg );
 }
@@ -147,14 +128,14 @@
     if (_failure && !self.isCancelled) {
         // if this is a top-level action with a view controller, assume the block needs to execute on the main thread
         if (_vc && !_parent) {
-            [self performSelectorOnMainThread:@selector(async_failure:) withObject:msg waitUntilDone:YES];
+            [self performSelectorOnMainThread:@selector(asyncFailure:) withObject:msg waitUntilDone:YES];
         } else {
-            [self async_failure:msg];
+            [self asyncFailure:msg];
         }
     }
 }
 
-- (void)async_result:(id)obj {
+- (void)asyncResult:(id)obj {
     if (_result && !self.isCancelled) {
         _result(self,obj);
     }
@@ -164,9 +145,9 @@
     if (_result && !self.isCancelled) {
         // if this is a top-level action with a view controller, assume the block needs to execute on the main thread
         if (_vc && !_parent) {
-            [self performSelectorOnMainThread:@selector(async_result:) withObject:obj waitUntilDone:YES];
+            [self performSelectorOnMainThread:@selector(asyncResult:) withObject:obj waitUntilDone:YES];
         } else {
-            [self async_result:obj];
+            [self asyncResult:obj];
         }
     }
 }
@@ -176,7 +157,7 @@
 }
 
 - (void)perform {
-    // gets called back by the queue after validation and setup is completed
+    // gets called back by the queue after validation and authorization is completed
 }
 
 @end

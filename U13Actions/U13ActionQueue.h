@@ -2,7 +2,7 @@
 //  U13ActionQueue.h
 //  U13Actions
 //
-//  Created by Chris Wright on 13-03-19.
+//  Created by Brane on 13-03-19.
 //  Copyright (c) 2013 Universe 13. All rights reserved.
 //
 
@@ -15,16 +15,16 @@
     NSMutableDictionary *throttles_;
 }
 
-@property (readonly) BOOL logged_in;
+@property (readonly) BOOL loggedIn;
 
 /** number of seconds an action can not be re-fired after being fired, 0 == no throttle */
-- (NSTimeInterval)throttle_seconds:(U13Action *)action;
-- (void)update_throttle:(U13Action *)action;
-- (void)reset_throttles;
-- (void)reset_throttle:(U13Action *)action;
+- (NSTimeInterval)throttleSeconds:(U13Action *)action;
+- (void)updateThrottle:(U13Action *)action;
+- (void)resetThrottles;
+- (void)resetThrottle:(U13Action *)action;
 
 - (void)enqueue:(U13Action *)action;
-- (void)enqueue_without_validation:(U13Action *)action;
+- (void)enqueueWithoutValidation:(U13Action *)action;
 
 - (void)validate:(U13Action *)action;
 - (void)perform:(U13Action *)action;
