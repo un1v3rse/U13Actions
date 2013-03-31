@@ -225,17 +225,19 @@
             // stop the queue, we gotta ask the user something
             queue_.suspended = YES;
             self.loginShowing = YES;
-            [self showLogin:[[U13Action alloc] initWithParent:action
-                                                      success:^(U13Action *action, NSString *msg) {
-                                                          queue_.suspended = NO;
-                                                          self.loginShowing = NO;
-                                                          [weakSelf perform:action.parent];
-                                                      }
-                                                      failure:^(U13Action *action, NSString *msg) {
-                                                          queue_.suspended = NO;
-                                                          self.loginShowing = NO;
-                                                          [action.parent failure:msg];
-                                                      } ]];
+            
+            U13Action *loginAction = [[U13Action alloc] initWithParent:action
+                                                               success:^(U13Action *action, NSString *msg) {
+                                                                   queue_.suspended = NO;
+                                                                   self.loginShowing = NO;
+                                                                   [weakSelf perform:action.parent];
+                                                               }
+                                                               failure:^(U13Action *action, NSString *msg) {
+                                                                   queue_.suspended = NO;
+                                                                   self.loginShowing = NO;
+                                                                   [action.parent failure:msg];
+                                                               }];
+            [self performSelectorOnMainThread:@selector(showLogin:) withObject:loginAction waitUntilDone:NO];
             return; // the parent will be re-called after refresh is completed
         }
     }
