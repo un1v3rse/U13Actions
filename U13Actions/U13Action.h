@@ -59,4 +59,8 @@ typedef void(^U13ActionDataHandler)(U13Action *action, NSObject *data);
 
 - (void)perform;
 
+- (U13ActionHandler)success_handler;
+- (U13ActionHandler)failure_handler;
+- (U13ActionDataHandler)result_handler;
+
 @end

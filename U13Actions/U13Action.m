@@ -160,4 +160,16 @@
     // gets called back by the queue after validation and authorization is completed
 }
 
+- (U13ActionHandler)success_handler {
+    return _success;
+}
+
+- (U13ActionHandler)failure_handler {
+    return _failure;
+}
+
+- (U13ActionDataHandler)result_handler {
+    return _result;
+}
+
 @end
